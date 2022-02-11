@@ -1,5 +1,5 @@
 pandas
-sqlite3
+pysqlite3
 numpy
 matplotlib
 matplotlib.pyplot
@@ -9,3 +9,4 @@ streamlit
 plotly
 urllib
 os
+openpyxl
