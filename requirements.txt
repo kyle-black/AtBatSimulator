@@ -8,5 +8,5 @@ sklearn
 streamlit
 plotly
 urllib3
-os
+
 openpyxl
