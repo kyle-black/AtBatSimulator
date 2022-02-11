@@ -7,6 +7,6 @@ scipy
 sklearn
 streamlit
 plotly
-urllib
+urllib3
 os
 openpyxl
