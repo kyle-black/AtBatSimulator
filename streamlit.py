@@ -101,7 +101,7 @@ for key in player_dict.keys():
 with st.expander("Model explanation"):
     st.write("""
          Data derived from SQLite3 database using 2021 players with plate apperarces > 200.
-         This model uses Gradient Boosted Regression, Random Forest Regression, and Linear Regression
+         This model uses Gradient Boosted Regression, Random Forest Regression, and Ada Boost Regression
          and takes the mean of all three predictions using optimized parameters (Grid Search).
          Using the simulated pitching parameters model predicts the batting average AFTER contact.
      """)
