@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import AdaBoostRegressor
 from sklearn import metrics
 
 from sklearn.ensemble import GradientBoostingRegressor
@@ -78,7 +79,7 @@ X = df.drop('estimated_ba_using_speedangle', axis=1).values
 
 # print(X)
 
-'''
+
 sc = StandardScaler()
 
 y = y.reshape(-1, 1)
@@ -121,8 +122,15 @@ RFR_Grid = {
 }
 grid_GBR = GridSearchCV(estimator=RFR, param_grid=RFR_Grid, cv=2, n_jobs=-1)
 
+AB = AdaBoostRegressor()
+AB_Grid = {
+    'n_estimators': [10, 50, 100, 500],
+    'learning_rate': [0.0001, 0.001, 0.01, 0.1, 1.0]
+}
+
 LR = LinearRegression()
-ereg = VotingRegressor(estimators=[('gb', grid_GBR), ('rf', RFR), ('lr', LR)])
+ereg = VotingRegressor(
+    estimators=[('gb', grid_GBR), ('rf', RFR), ('lr', LR), ('ab', AB)])
 ereg = ereg.fit(X_train, y_train.ravel())
 
 y_pred = ereg.predict(X_test)
@@ -136,4 +144,3 @@ print(metrics.mean_absolute_error(y_test, y_pred))
 print(metrics.mean_squared_error(y_test, y_pred))
 
 print(df1.columns)
-'''

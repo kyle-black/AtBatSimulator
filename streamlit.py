@@ -4,7 +4,7 @@ import numpy as np
 #import matplotlib.pyplot as plt
 #from scipy.fftpack import cs_diff, sc_diff
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import AdaBoostRegressor, RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
 from sklearn import metrics
 import streamlit as st
@@ -50,10 +50,8 @@ except:
 ################################################
 
 html_string1 = '''<body style="background-color:powderblue;">
-
 <h1>This is a heading</h1>
 <p>This is a paragraph.</p>
-
 </body>'''
 
 
@@ -450,8 +448,18 @@ RFR_Grid = {
 }
 grid_GBR = GridSearchCV(estimator=RFR, param_grid=RFR_Grid, cv=2, n_jobs=-1)
 
-LR = LinearRegression()
-ereg = VotingRegressor(estimators=[('gb', grid_GBR), ('rf', RFR), ('lr', LR)])
+Ada = AdaBoostRegressor(random_state=1)
+Ada_parameters = {'learning_rate': [0.01, 0.02, 0.03, 0.04],
+                  'subsample': [0.9, 0.5, 0.2, 0.1],
+                  'n_estimators': [100, 500, 1000, 1500],
+                  'max_depth': [4, 6, 8, 10]
+                  }
+
+grid_Ada = GridSearchCV(
+    estimator=Ada, param_grid=Ada_parameters, cv=2, n_jobs=-1)
+
+#LR = LinearRegression()
+ereg = VotingRegressor(estimators=[('gb', grid_GBR), ('rf', RFR), ('ad', Ada)])
 ereg = ereg.fit(X_train, y_train.ravel())
 
 y_pred = ereg.predict(X_test)
@@ -516,3 +524,5 @@ hide_streamlit_style = """
             </style>
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+st.write('authored by Kyle Black')
+st.write('https://github.com/kyle-black/AtBatSimulator')
