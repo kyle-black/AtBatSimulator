@@ -371,7 +371,7 @@ with col2:
 
     if zone == '13':
         st.image('images/strikezone/13.png')
-        zone12 = 1
+        zone13 = 1
     else:
         zone13 = 0
 
@@ -575,7 +575,7 @@ else:
 
 #pred = sc.inverse_transform(pred)
 with col3:
-    st.subheader('Simulated Batting Average:')
+    st.subheader('Simulated Batting Average After Contact:')
 
     html_string2 = f'<h1 style="font-family: Garamond, serif;color:green;">  {pred}</h1>'
     st.markdown(html_string2, unsafe_allow_html=True)
