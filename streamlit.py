@@ -102,7 +102,7 @@ with st.expander("Model explanation"):
     st.write("""
          Data derived from SQLite3 database using 2021 players with plate apperarces > 200.
          This model uses Gradient Boosted Regression, Random Forest Regression, and Ada Boost Regression
-         and takes the mean of all three predictions using optimized parameters (Grid Search).
+         and takes the mean of all three predictions using optimized hyperparameters (Grid Search).
          Using the simulated pitching parameters model predicts the batting average AFTER contact.
      """)
 
@@ -125,18 +125,22 @@ player_df = player_df[['NFBCLASTFIRST', 'ESPNID']]
 player_df = player_df[player_df['NFBCLASTFIRST'] == option]
 
 #player = int(player_df['ESPNID'])
-
-player_df["player"] = pd.to_numeric(player_df["ESPNID"])
-
-player = int(player_df["player"])
-
+try:
+    player_df["player"] = pd.to_numeric(player_df["ESPNID"])
+    player = int(player_df["player"])
+except:
+    ('player database missing')
 # st.write(player)
-filename = f'images/players/{player}.png'
-image_url = f"https://a.espncdn.com/combiner/i?img=/i/headshots/mlb/players/full/{player}.png"
+
 
 # calling urlretrieve function to get resource
-urllib.request.urlretrieve(image_url, filename)
-img = mpimg.imread(filename)
+try:
+    filename = f'images/players/{player}.png'
+    image_url = f"https://a.espncdn.com/combiner/i?img=/i/headshots/mlb/players/full/{player}.png"
+    urllib.request.urlretrieve(image_url, filename)
+    img = mpimg.imread(filename)
+except:
+    st.write('No Photo')
 # st.write()
 
 
@@ -287,7 +291,10 @@ simulated_pitch = [pitch, throws, zone, spin, ball, strike, speed]
 
 
 with col1:
-    st.image(img)
+    try:
+        st.image(img)
+    except:
+        st.write('No image available')
     st.subheader(f'  {option}')
 
 with col2:
@@ -299,50 +306,85 @@ with col2:
     st.write(f'Strikes: {strike}')
     if zone == '1':
         st.image('images/strikezone/1.png')
-
+        zone1 = 1
+    else:
+        zone1 = 0
     if zone == '2':
         st.image('images/strikezone/2.png')
+        zone2 = 1
+    else:
+        zone2 = 0
 
     if zone == '3':
         st.image('images/strikezone/3.png')
+        zone3 = 1
+    else:
+        zone3 = 0
 
     if zone == '4':
         st.image('images/strikezone/4.png')
+        zone4 = 1
+    else:
+        zone4 = 0
 
     if zone == '5':
         st.image('images/strikezone/5.png')
+        zone5 = 1
+    else:
+        zone5 = 0
 
     if zone == '6':
         st.image('images/strikezone/6.png')
+        zone6 = 1
+    else:
+        zone6 = 0
 
     if zone == '7':
         st.image('images/strikezone/7.png')
+        zone7 = 1
+    else:
+        zone7 = 0
 
     if zone == '8':
         st.image('images/strikezone/8.png')
+        zone8 = 1
+    else:
+        zone8 = 0
 
     if zone == '9':
         st.image('images/strikezone/9.png')
-
-    if zone == '10':
-        st.image('images/strikezone/10.png')
+        zone9 = 1
+    else:
+        zone9 = 0
 
     if zone == '11':
         st.image('images/strikezone/11.png')
+        zone11 = 1
+    else:
+        zone11 = 0
 
     if zone == '12':
         st.image('images/strikezone/12.png')
+        zone12 = 1
+    else:
+        zone12 = 0
 
     if zone == '13':
         st.image('images/strikezone/13.png')
+        zone12 = 1
+    else:
+        zone13 = 0
 
     if zone == '14':
         st.image('images/strikezone/14.png')
+        zone14 = 1
+    else:
+        zone14 = 0
 
 
 ###################################
 hold_array = np.array(
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
 hold_array[0] = zone
 hold_array[1] = spin
@@ -363,6 +405,39 @@ hold_array[15] = si
 hold_array[16] = sl
 hold_array[17] = left
 hold_array[18] = right
+########################
+#hold_array[0] = zone
+hold_array[0] = spin
+hold_array[1] = ball
+hold_array[2] = strike
+hold_array[3] = speed
+hold_array[4] = ch
+hold_array[5] = cs
+hold_array[6] = cu
+hold_array[7] = fa
+hold_array[8] = fc
+hold_array[9] = ff
+hold_array[10] = fs
+hold_array[11] = kc
+hold_array[12] = kn
+hold_array[13] = sc
+hold_array[14] = si
+hold_array[15] = sl
+hold_array[16] = left
+hold_array[17] = right
+hold_array[18] = zone1
+hold_array[19] = zone2
+hold_array[20] = zone3
+hold_array[21] = zone4
+hold_array[22] = zone5
+hold_array[23] = zone6
+hold_array[24] = zone7
+hold_array[25] = zone8
+hold_array[26] = zone9
+hold_array[27] = zone11
+hold_array[28] = zone12
+hold_array[29] = zone13
+hold_array[30] = zone14
 
 
 ###################################
@@ -389,6 +464,7 @@ df = pd.read_csv(csv_path)
 
 df = df[['batter', 'pitch_type', 'p_throws', 'zone', 'release_spin_rate', 'balls', 'strikes',
          'release_speed', 'estimated_ba_using_speedangle']]
+df['zone'] = pd.Categorical(df.zone)
 
 #'SELECT * from EVENT WHERE player_name=Junis, Jakob'
 df = pd.get_dummies(df)
@@ -405,6 +481,7 @@ df = df.drop('batter', axis=1)
 # print(sql_query)
 df = df[df['balls'].notna()]
 df = df[df['strikes'].notna()]
+
 
 #df = df.append(simulated_pitch)
 #df = pd.get_dummies(df)
